@@ -8,8 +8,8 @@ long_description = open(os.path.join(here, 'README.rst'), 'r').read()
 
 setup(
     name='nic_api',
-    version='0.2.4',
-    description='NIC.RU API wrapper library',
+    version='1.0.0',
+    description='NIC.RU API Python library',
     long_description=long_description,
     url='https://github.com/andr1an/nic-api',
     author='Sergey Andrianov',
@@ -21,22 +21,18 @@ setup(
         'Topic :: Internet :: Name Service (DNS)',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
     ],
-    python_requires='>=2.7, <4.0',
+    python_requires='>=3.6, <4.0',
     install_requires=[
-        'requests>=2.4',
+        'requests>=2.4', "requests_oauthlib"
     ],
     project_urls={
-        'Bug Reports': 'https://github.com/andr1an/nic-api/issues',
-        'Source': 'https://github.com/andr1an/nic-api',
+        'Bug Reports': 'https://github.com/shizacat/nic-api/issues',
+        'Source': 'https://github.com/shizacat/nic-api',
     },
 )
