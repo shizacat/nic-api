@@ -1,21 +1,18 @@
-NIC.RU API wrapper library
+NIC.RU API Python library
 ==========================
 
-The package is a wrapper for the API of Russian DNS registrar Ru-Center
-(a.k.a. NIC.RU). The library provides classes for managing DNS services,
+The package is the library for the API of Russian DNS registrar Ru-Center
+(a.k.a. NIC.RU). It provides classes for managing DNS services,
 zones and records.
+
+This fork: https://github.com/andr1an/nic-api
 
 Installation
 ------------
 
 Using ``pip``::
 
-    pip install nic-api
-
-If you want to use the module in your project, add this line to the project's
-``requirements.txt`` file::
-
-    nic-api
+    pip install https://git+https://github.com/shizacat/nic-api
 
 Usage
 -----
@@ -27,36 +24,42 @@ To start using the API, you should get a pair of OAuth application login and
 password from NIC.RU. Here is the registration page:
 https://www.nic.ru/manager/oauth.cgi?step=oauth.app_register
 
-Create an instance of ``nic_api.DnsApi`` and provide the OAuth application
-credentials:
 
 .. code:: python
 
     from nic_api import DnsApi
-    oauth_config = {
-        'APP_LOGIN': 'your_application_login',
-        'APP_PASSWORD': 'your_application_secret'
-    }
-    api = DnsApi(oauth_config)
 
-Authorization
-~~~~~~~~~~~~~
+    def print_token(token: dict):
+        print("Token:", token)
 
-Call the ``authorize()`` method and specify the username and the password
-of your NIC.RU account, and a file to store the OAuth token for future use:
+    api = DnsApi(
+        client_id = "---",
+        client_secret = "---",
+        username = "---/NIC-D",
+        password = "---",
+        scope = "GET:/dns-master/.+",
+        token_updater=print_token
+    )
+
+    # First you need to get token
+    api.get_token()
+
+Get token
+~~~~~~~~~
+
+Call the ``get_token()`` method:
 
 .. code:: python
 
-    api.authorize(username='Your_account/NIC-D',
-                  password='Your_password',
-                  token_filename='nic_token.json')
+    # First you need to get token
+    api.get_token()
 
 Now you are ready to use the API.
 
-While the token in ``token_filename`` file is valid, you don't need to
-provide neither username or password to access the API - just create
-an instance of the ``DnsApi`` class with the same OAuth config, and pass only
-``token_filename`` to the ``authorize()`` method.
+If you want, you may to save token to anything (example into file) throuht
+callback ``token_updater`` and then he had used for authorize.
+While the token is valie, you don't need to provide neither username or password
+to access the API.
 
 Viewing services and DNS zones
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
