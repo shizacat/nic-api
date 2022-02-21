@@ -7,6 +7,8 @@ zones and records.
 
 This fork: https://github.com/andr1an/nic-api
 
+Async version: https://github.com/shizacat/aionic
+
 Installation
 ------------
 
