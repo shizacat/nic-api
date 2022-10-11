@@ -133,7 +133,6 @@ class DnsApi(object):
         token_updater: Callable[[dict], None] = None,
         timeout: int = 600,
         base_url: str = None,
-        offline: int = 3600,
     ):
         self._client_id = client_id
         self._client_secret = client_secret
@@ -142,7 +141,6 @@ class DnsApi(object):
         self._scope = scope
         self._token = token
         self._base_url = self.base_url_default if base_url is None else base_url
-        self._offline = offline
         self._token_updater_clb = token_updater
         self._timeout = timeout
         self.default_service = default_service
@@ -160,7 +158,6 @@ class DnsApi(object):
             auto_refresh_kwargs={
                 "client_id": self._client_id,
                 "client_secret": self._client_secret,
-                "offline": self._offline,
             },
             token_updater=self._token_updater,
             token=self._token
@@ -169,12 +166,12 @@ class DnsApi(object):
     @property
     def url_token(self):
         return f"{self._base_url}/oauth/token"
-    
+
     def _token_updater(self, token: dict):
         self._token = token
         if self._token_updater_clb is not None:
             self._token_updater_clb(token)
-    
+
     def get_token(self):
         """Get token"""
         try:
@@ -184,7 +181,6 @@ class DnsApi(object):
                 password=self._password,
                 client_id=self._client_id,
                 client_secret=self._client_secret,
-                offline=self._offline
             )
         except InvalidGrantError as e:
             raise DnsApiException(str(e))
