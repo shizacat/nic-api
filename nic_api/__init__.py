@@ -2,8 +2,6 @@
 
 from __future__ import print_function
 
-import os
-import sys
 import logging
 import textwrap
 from xml.etree import ElementTree
@@ -11,7 +9,7 @@ from typing import Callable, List, Tuple, Optional
 
 import requests
 from requests_oauthlib import OAuth2Session
-from oauthlib.oauth2 import LegacyApplicationClient, TokenExpiredError, InvalidGrantError
+from oauthlib.oauth2 import LegacyApplicationClient, InvalidGrantError
 
 from nic_api.models import (
     parse_record,
@@ -133,6 +131,7 @@ class DnsApi(object):
         token_updater: Callable[[dict], None] = None,
         timeout: int = 600,
         base_url: str = None,
+        offline: Optional[int] = None,  # 3600
     ):
         self._client_id = client_id
         self._client_secret = client_secret
@@ -141,6 +140,7 @@ class DnsApi(object):
         self._scope = scope
         self._token = token
         self._base_url = self.base_url_default if base_url is None else base_url
+        self._offline = offline
         self._token_updater_clb = token_updater
         self._timeout = timeout
         self.default_service = default_service
@@ -150,15 +150,18 @@ class DnsApi(object):
         self.logger = logging.getLogger(__name__)
 
         # Setup
+        auto_refresh_kwargs = {
+            "client_id": self._client_id, "client_secret": self._client_secret,
+        }
+        if self._offline is not None:
+            auto_refresh_kwargs["offline"] = self._offline
+
         self._session = OAuth2Session(
             client=LegacyApplicationClient(
                 client_id=self._client_id, scope=self._scope
             ),
             auto_refresh_url=self.url_token,
-            auto_refresh_kwargs={
-                "client_id": self._client_id,
-                "client_secret": self._client_secret,
-            },
+            auto_refresh_kwargs=auto_refresh_kwargs,
             token_updater=self._token_updater,
             token=self._token
         )
@@ -175,12 +178,17 @@ class DnsApi(object):
     def get_token(self):
         """Get token"""
         try:
+            kwargs = {}
+            if self._offline is not None:
+                kwargs["offline"] = self._offline
+
             token = self._session.fetch_token(
                 token_url=self.url_token,
                 username=self._username,
                 password=self._password,
                 client_id=self._client_id,
                 client_secret=self._client_secret,
+                **kwargs
             )
         except InvalidGrantError as e:
             raise DnsApiException(str(e))
@@ -220,9 +228,9 @@ class DnsApi(object):
         # Check http error
         if check_status and not response.ok:
             raise DnsApiException(f"HTTP Error. Body: {response.text}")
-        
+
         return response
-   
+
     def _parse_answer(
             self, body: str
         ) -> Tuple[str, str, Optional[ElementTree.Element]]:
