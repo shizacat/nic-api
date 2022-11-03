@@ -7,15 +7,14 @@ here = os.path.abspath(os.path.dirname(__file__))
 long_description = open(os.path.join(here, 'README.rst'), 'r').read()
 
 setup(
-    name='nic_api',
+    name='sh_nic_api',
     version='1.0.3',
     description='NIC.RU API Python library',
     long_description=long_description,
     url='https://github.com/andr1an/nic-api',
-    author='Sergey Andrianov',
-    author_email='info@andrian.ninja',
+    author='Sergey Andrianov; Alexey Matveev',
     license='GPLv3',
-    packages=['nic_api'],
+    packages=['sh_nic_api'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Topic :: Internet :: Name Service (DNS)',

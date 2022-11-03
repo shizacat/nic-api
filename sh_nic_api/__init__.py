@@ -11,7 +11,7 @@ import requests
 from requests_oauthlib import OAuth2Session
 from oauthlib.oauth2 import LegacyApplicationClient, InvalidGrantError
 
-from nic_api.models import (
+from sh_nic_api.models import (
     parse_record,
     NICService,
     NICZone,
@@ -24,7 +24,7 @@ from nic_api.models import (
     MXRecord,
     TXTRecord,
 )
-from nic_api.exceptions import DnsApiException
+from sh_nic_api.exceptions import DnsApiException
 
 
 _RECORD_CLASSES_CAN_ADD = (

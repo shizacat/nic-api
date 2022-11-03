@@ -5,7 +5,7 @@ compatibility.
 import random
 import textwrap
 
-from nic_api.models import *
+from sh_nic_api.models import *
 
 
 def test_a_root():
